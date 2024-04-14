@@ -1,22 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@200;600&display=swap"
-      rel="stylesheet"
-    />
-    <title>Development | Isoflow</title>
-  </head>
-  <style>
-    body {
-      overscroll-behavior: none;
-      position: fixed;
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@200;600&display=swap" rel="stylesheet" />
+  <title>Animated Diagram | Yondu</title>
+</head>
+<style>
+  body {
+    overscroll-behavior: none;
+    position: fixed;
+  }
+
+  @keyframes dash {
+    from {
+      stroke-dashoffset: 1000;
     }
-  </style>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-  </body>
+
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes dashrev {
+    from {
+      stroke-dashoffset: 0;
+    }
+
+    to {
+      stroke-dashoffset: 1000;
+    }
+  }
+
+  @keyframes ball {
+    from {
+      offset-distance: 0%;
+    }
+
+    to {
+      offset-distance: 100%;
+    }
+  }
+
+  @keyframes move {
+    0% {
+      offset-distance: 0%;
+    }
+
+    100% {
+      offset-distance: 100%;
+    }
+  }
+</style>
+
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+</body>
+
 </html>

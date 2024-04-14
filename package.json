@@ -13,7 +13,7 @@
   "scripts": {
     "start": "webpack serve --config ./webpack/dev.config.js",
     "dev": "nodemon --watch ./src/ -e ts,tsx --exec npm run build",
-    "build": "webpack --config ./webpack/prod.config.js && tsc --declaration --emitDeclarationOnly && tsc-alias",
+    "build": "webpack serve --config ./webpack/dev.config.js && tsc --declaration --emitDeclarationOnly && tsc-alias",
     "test": "jest",
     "lint": "tsc --noEmit && eslint ./src/**/*.{ts,tsx}",
     "lint:fix": "eslint --fix ./src/**/*.{ts,tsx}",

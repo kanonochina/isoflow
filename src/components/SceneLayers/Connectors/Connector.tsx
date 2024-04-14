@@ -42,6 +42,18 @@ export const Connector = ({ connector: _connector, isSelected }: Props) => {
     }, '');
   }, [connector.path.tiles, drawOffset]);
 
+  const convertPathString = (pth: string) => {
+    const path = pth.split(' ');
+    let newPath = '';
+    for (let i = 0; i < path.length; i++) {
+      if (i % 50 === 0) {
+        newPath += `M${path[i]} `;
+      } else {
+        newPath += `${path[i]} `;
+      }
+    }
+    return newPath.trim();
+  };
   const anchorPositions = useMemo(() => {
     if (!isSelected) return [];
 
@@ -77,6 +89,7 @@ export const Connector = ({ connector: _connector, isSelected }: Props) => {
   }, [connector.width]);
 
   const strokeDashArray = useMemo(() => {
+    return `${connectorWidthPx * 2.4}, ${connectorWidthPx * 2.4}`;
     switch (connector.style) {
       case 'DASHED':
         return `${connectorWidthPx * 2}, ${connectorWidthPx * 2}`;
@@ -92,6 +105,31 @@ export const Connector = ({ connector: _connector, isSelected }: Props) => {
     <Box style={css}>
       <Svg
         style={{
+          transform: 'scale(-1, 1)',
+          top: -10,
+          right: -10,
+          position: 'absolute'
+        }}
+        viewboxSize={pxSize}
+      >
+        <circle
+          cx="10"
+          cy="10"
+          r="10"
+          stroke="black"
+          strokeWidth="1"
+          fill="red"
+        >
+          <animateMotion
+            path={`${convertPathString(pathString)}`}
+            repeatCount="indefinite"
+            dur="1s"
+          />
+        </circle>
+      </Svg>
+
+      <Svg
+        style={{
           // TODO: The original x coordinates of each tile seems to be calculated wrongly.
           // They are mirrored along the x-axis.  The hack below fixes this, but we should
           // try to fix this issue at the root of the problem (might have further implications).
@@ -101,7 +139,8 @@ export const Connector = ({ connector: _connector, isSelected }: Props) => {
       >
         <polyline
           points={pathString}
-          stroke={theme.palette.common.white}
+          // stroke={theme.palette.common.white}
+          stroke="transparent"
           strokeWidth={connectorWidthPx * 1.4}
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -109,16 +148,19 @@ export const Connector = ({ connector: _connector, isSelected }: Props) => {
           strokeDasharray={strokeDashArray}
           fill="none"
         />
+
         <polyline
+          id={`${connector.id}`}
           points={pathString}
           stroke={getColorVariant(color.value, 'dark', { grade: 1 })}
           strokeWidth={connectorWidthPx}
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeDasharray={strokeDashArray}
+          strokeDashoffset={strokeDashArray}
           fill="none"
+          style={{ animation: 'dash 20s linear infinite', color: 'red' }}
         />
-
         {anchorPositions.map((anchor) => {
           return (
             <g key={anchor.id}>
