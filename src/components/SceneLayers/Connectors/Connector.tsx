@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useTheme, Box } from '@mui/material';
 import { UNPROJECTED_TILE_SIZE } from 'src/config';
 import {
@@ -19,6 +19,7 @@ interface Props {
 }
 
 export const Connector = ({ connector: _connector, isSelected }: Props) => {
+  const [showSVG, setShowSVG] = useState(false);
   const theme = useTheme();
   const color = useColor(_connector.color);
   const { currentView } = useScene();
@@ -26,6 +27,72 @@ export const Connector = ({ connector: _connector, isSelected }: Props) => {
   const { css, pxSize } = useIsoProjection({
     ...connector.path.rectangle
   });
+  const [svgs, setSvgs] = useState<Array<JSX.Element>>([]);
+
+  const sendPing = () => {
+    setSvgs((prevSvgs) => {
+      return [
+        ...prevSvgs,
+        <Svg
+          key={prevSvgs.length}
+          style={{
+            transform: 'scale(-1, 1)',
+            top: -15,
+            right: -15,
+            position: 'absolute'
+          }}
+          viewboxSize={pxSize}
+        >
+          <circle
+            cx="15"
+            cy="15"
+            r="15"
+            stroke="black"
+            strokeWidth="1"
+            fill="red"
+          >
+            <animateMotion
+              path={`${convertPathString(pathString)}`}
+              repeatCount="1"
+              dur="1s"
+            />
+          </circle>
+        </Svg>
+      ];
+    });
+  };
+
+  // useEffect(() => {
+  //   if (svgs.length > 0) {
+  //     const timer = setTimeout(() => {
+  //       setSvgs((prevSvgs) => {
+  //         return prevSvgs.slice(1);
+  //       });
+  //       clearTimeout(timer);
+  //     }, 500);
+
+  //     return () => {
+  //       clearTimeout(timer);
+  //     };
+  //   }
+  // }, [svgs]);
+
+  useEffect(() => {
+    const timeoutIds = svgs.map((_, index) => {
+      return setTimeout(() => {
+        setSvgs((prevSvgs) => {
+          return prevSvgs.filter((_, i) => {
+            return i !== index;
+          });
+        });
+      }, 1000);
+    });
+    return () => {
+      timeoutIds.forEach((timeoutId) => {
+        return clearTimeout(timeoutId);
+      });
+    };
+  }, [svgs]);
 
   const drawOffset = useMemo(() => {
     return {
@@ -89,33 +156,73 @@ export const Connector = ({ connector: _connector, isSelected }: Props) => {
   }, [connector.width]);
 
   const strokeDashArray = useMemo(() => {
-    return `${connectorWidthPx * 2.4}, ${connectorWidthPx * 2.4}`;
     switch (connector.style) {
       case 'DASHED':
         return `${connectorWidthPx * 2}, ${connectorWidthPx * 2}`;
       case 'DOTTED':
         return `0, ${connectorWidthPx * 1.8}`;
+      case 'ANIMATED':
+        return `${connectorWidthPx * 2.4}, ${connectorWidthPx * 2.4}`;
       case 'SOLID':
       default:
         return 'none';
     }
   }, [connector.style, connectorWidthPx]);
 
+  const animatedProps =
+    connector.style === 'ANIMATED'
+      ? {
+          style: {
+            animation: 'dash 20s linear infinite',
+            color: 'red'
+          },
+          strokeDasharray: strokeDashArray,
+          strokeDashoffset: strokeDashArray
+        }
+      : {};
+
   return (
     <Box style={css}>
-      <Svg
+      {/* {showSVG && (
+        <Svg
+          style={{
+            transform: 'scale(-1, 1)',
+            top: -15,
+            right: -15,
+            position: 'absolute'
+          }}
+          viewboxSize={pxSize}
+        >
+          <circle
+            cx="15"
+            cy="15"
+            r="15"
+            stroke="black"
+            strokeWidth="1"
+            fill="red"
+          >
+            <animateMotion
+              path={`${convertPathString(pathString)}`}
+              repeatCount="indefinite"
+              dur="1s"
+            />
+          </circle>
+        </Svg>
+      )} */}
+      {svgs}
+      {/* <Svg
         style={{
           transform: 'scale(-1, 1)',
-          top: -10,
-          right: -10,
+          top: -15,
+          right: -15,
           position: 'absolute'
         }}
         viewboxSize={pxSize}
       >
         <circle
-          cx="10"
-          cy="10"
-          r="10"
+          cx="15"
+          cy="15"
+          r="15"
           stroke="black"
           strokeWidth="1"
           fill="red"
@@ -126,7 +233,7 @@ export const Connector = ({ connector: _connector, isSelected }: Props) => {
             dur="1s"
           />
         </circle>
-      </Svg>
+      </Svg> */}
 
       <Svg
         style={{
@@ -139,8 +246,11 @@ export const Connector = ({ connector: _connector, isSelected }: Props) => {
       >
         <polyline
           points={pathString}
-          // stroke={theme.palette.common.white}
-          stroke="transparent"
+          stroke={
+            connector.style === 'ANIMATED'
+              ? 'transparent'
+              : theme.palette.common.white
+          }
           strokeWidth={connectorWidthPx * 1.4}
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -148,7 +258,6 @@ export const Connector = ({ connector: _connector, isSelected }: Props) => {
           strokeDasharray={strokeDashArray}
           fill="none"
         />
-
         <polyline
           id={`${connector.id}`}
           points={pathString}
@@ -157,10 +266,38 @@ export const Connector = ({ connector: _connector, isSelected }: Props) => {
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeDasharray={strokeDashArray}
-          strokeDashoffset={strokeDashArray}
           fill="none"
-          style={{ animation: 'dash 20s linear infinite', color: 'red' }}
+          {...animatedProps}
         />
+        {/* {anchorPositions.map(() => {
+          return (
+            <>
+              <polyline
+                points={pathString}
+                // stroke={theme.palette.common.white}
+                stroke={theme.palette.common.white}
+                strokeWidth={connectorWidthPx * 1.4}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeOpacity={0.7}
+                strokeDasharray={strokeDashArray}
+                fill="none"
+              />
+              <polyline
+                id={`${connector.id}`}
+                points={pathString}
+                stroke={getColorVariant(color.value, 'dark', { grade: 1 })}
+                strokeWidth={connectorWidthPx}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeDasharray={strokeDashArray}
+                fill="none"
+                {...animatedProps}
+              />
+            </>
+          );
+        })} */}
+
         {anchorPositions.map((anchor) => {
           return (
             <g key={anchor.id}>
@@ -182,7 +319,10 @@ export const Connector = ({ connector: _connector, isSelected }: Props) => {
         })}
 
         {directionIcon && (
-          <g transform={`translate(${directionIcon.x}, ${directionIcon.y})`}>
+          <g
+            transform={`translate(${directionIcon.x}, ${directionIcon.y})`}
+            onClick={sendPing}
+          >
             <g transform={`rotate(${directionIcon.rotation})`}>
               <polygon
                 fill="black"

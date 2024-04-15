@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { coords, id, constrainedStrings } from './common';
 
-export const connectorStyleOptions = ['SOLID', 'DOTTED', 'DASHED'] as const;
+export const connectorStyleOptions = [
+  'SOLID',
+  'DOTTED',
+  'DASHED',
+  'ANIMATED'
+] as const;
 
 export const anchorSchema = z.object({
   id,

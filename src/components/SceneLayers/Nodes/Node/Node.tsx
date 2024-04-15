@@ -40,6 +40,9 @@ export const Node = ({ node, order }: Props) => {
 
   return (
     <Box
+      onClick={() => {
+        return console.log('first click');
+      }}
       sx={{
         position: 'absolute',
         zIndex: order
