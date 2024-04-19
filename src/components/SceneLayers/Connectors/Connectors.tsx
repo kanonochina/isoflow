@@ -5,9 +5,10 @@ import { Connector } from './Connector';
 
 interface Props {
   connectors: ReturnType<typeof useScene>['connectors'];
+  clicked?: boolean;
 }
 
-export const Connectors = ({ connectors }: Props) => {
+export const Connectors = ({ connectors, clicked }: Props) => {
   const itemControls = useUiStateStore((state) => {
     return state.itemControls;
   });
@@ -35,6 +36,7 @@ export const Connectors = ({ connectors }: Props) => {
             key={connector.id}
             connector={connector}
             isSelected={selectedConnectorId === connector.id}
+            clicked={clicked}
           />
         );
       })}

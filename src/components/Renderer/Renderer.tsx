@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Box } from '@mui/material';
 import { useUiStateStore } from 'src/stores/uiStateStore';
 import { useInteractionManager } from 'src/interaction/useInteractionManager';
@@ -16,6 +16,7 @@ import { useScene } from 'src/hooks/useScene';
 import { RendererProps } from 'src/types/rendererProps';
 
 export const Renderer = ({ showGrid, backgroundColor }: RendererProps) => {
+  const [showClicked, setClicked] = useState(false);
   const containerRef = useRef<HTMLDivElement>();
   const interactionsRef = useRef<HTMLDivElement>();
   const enableDebugTools = useUiStateStore((state) => {
@@ -60,6 +61,25 @@ export const Renderer = ({ showGrid, backgroundColor }: RendererProps) => {
         <Rectangles rectangles={rectangles} />
       </SceneLayer>
       <Box
+        onClick={() => {
+          console.log(showClicked);
+          setClicked(!showClicked);
+          setClicked(!showClicked);
+        }}
+        sx={{
+          position: 'absolute',
+          width: '100px',
+          height: '100px',
+          background: 'red',
+          color: 'red',
+          zIndex: 100,
+          top: 0,
+          left: 0
+        }}
+      >
+        Click test events
+      </Box>
+      <Box
         sx={{
           position: 'absolute',
           width: '100%',
@@ -76,7 +96,7 @@ export const Renderer = ({ showGrid, backgroundColor }: RendererProps) => {
         </SceneLayer>
       )}
       <SceneLayer>
-        <Connectors connectors={connectors} />
+        <Connectors connectors={connectors} clicked={showClicked} />
       </SceneLayer>
       <SceneLayer>
         <TextBoxes textBoxes={textBoxes} />

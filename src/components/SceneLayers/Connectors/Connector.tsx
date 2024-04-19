@@ -7,6 +7,7 @@ import {
   getConnectorDirectionIcon
 } from 'src/utils';
 import { Circle } from 'src/components/Circle/Circle';
+import { Ping } from 'src/components/Circle/Ping';
 import { Svg } from 'src/components/Svg/Svg';
 import { useIsoProjection } from 'src/hooks/useIsoProjection';
 import { useConnector } from 'src/hooks/useConnector';
@@ -16,9 +17,14 @@ import { useColor } from 'src/hooks/useColor';
 interface Props {
   connector: ReturnType<typeof useScene>['connectors'][0];
   isSelected?: boolean;
+  clicked?: boolean;
 }
 
-export const Connector = ({ connector: _connector, isSelected }: Props) => {
+export const Connector = ({
+  connector: _connector,
+  isSelected,
+  clicked
+}: Props) => {
   const [showSVG, setShowSVG] = useState(false);
   const theme = useTheme();
   const color = useColor(_connector.color);
@@ -29,38 +35,20 @@ export const Connector = ({ connector: _connector, isSelected }: Props) => {
   });
   const [svgs, setSvgs] = useState<Array<JSX.Element>>([]);
 
-  const sendPing = () => {
-    setSvgs((prevSvgs) => {
-      return [
-        ...prevSvgs,
-        <Svg
-          key={prevSvgs.length}
-          style={{
-            transform: 'scale(-1, 1)',
-            top: -15,
-            right: -15,
-            position: 'absolute'
-          }}
-          viewboxSize={pxSize}
-        >
-          <circle
-            cx="15"
-            cy="15"
-            r="15"
-            stroke="black"
-            strokeWidth="1"
-            fill="red"
-          >
-            <animateMotion
-              path={`${convertPathString(pathString)}`}
-              repeatCount="1"
-              dur="1s"
-            />
-          </circle>
-        </Svg>
-      ];
-    });
-  };
+  // const newComponents = Array.from(
+  //   { length: numberOfComponents },
+  //   (_, index) => {
+  //     return (
+  //       <Ping
+  //         key={index}
+  //         fill="red"
+  //         path={convertPathString(pathString)}
+  //         pxSize={pxSize}
+  //         duration="1s"
+  //       />
+  //     );
+  //   }
+  // );
 
   // useEffect(() => {
   //   if (svgs.length > 0) {
@@ -80,11 +68,12 @@ export const Connector = ({ connector: _connector, isSelected }: Props) => {
   useEffect(() => {
     const timeoutIds = svgs.map((_, index) => {
       return setTimeout(() => {
-        setSvgs((prevSvgs) => {
-          return prevSvgs.filter((_, i) => {
-            return i !== index;
+        clicked &&
+          setSvgs((prevSvgs) => {
+            return prevSvgs.filter((_, i) => {
+              return i !== index;
+            });
           });
-        });
       }, 1000);
     });
     return () => {
@@ -180,61 +169,24 @@ export const Connector = ({ connector: _connector, isSelected }: Props) => {
           strokeDashoffset: strokeDashArray
         }
       : {};
-
+  const sendPing = () => {
+    setSvgs((prevSvgs) => {
+      return [
+        ...prevSvgs,
+        <Ping
+          key={prevSvgs.length}
+          fill="red"
+          path={convertPathString(pathString)}
+          pxSize={pxSize}
+          duration="1s"
+        />
+      ];
+    });
+  };
   return (
     <Box style={css}>
-      {/* {showSVG && (
-        <Svg
-          style={{
-            transform: 'scale(-1, 1)',
-            top: -15,
-            right: -15,
-            position: 'absolute'
-          }}
-          viewboxSize={pxSize}
-        >
-          <circle
-            cx="15"
-            cy="15"
-            r="15"
-            stroke="black"
-            strokeWidth="1"
-            fill="red"
-          >
-            <animateMotion
-              path={`${convertPathString(pathString)}`}
-              repeatCount="indefinite"
-              dur="1s"
-            />
-          </circle>
-        </Svg>
-      )} */}
+      {/* {clicked ? sendPing : null} */}
       {svgs}
-      {/* <Svg
-        style={{
-          transform: 'scale(-1, 1)',
-          top: -15,
-          right: -15,
-          position: 'absolute'
-        }}
-        viewboxSize={pxSize}
-      >
-        <circle
-          cx="15"
-          cy="15"
-          r="15"
-          stroke="black"
-          strokeWidth="1"
-          fill="red"
-        >
-          <animateMotion
-            path={`${convertPathString(pathString)}`}
-            repeatCount="indefinite"
-            dur="1s"
-          />
-        </circle>
-      </Svg> */}
-
       <Svg
         style={{
           // TODO: The original x coordinates of each tile seems to be calculated wrongly.
@@ -269,34 +221,6 @@ export const Connector = ({ connector: _connector, isSelected }: Props) => {
           fill="none"
           {...animatedProps}
         />
-        {/* {anchorPositions.map(() => {
-          return (
-            <>
-              <polyline
-                points={pathString}
-                // stroke={theme.palette.common.white}
-                stroke={theme.palette.common.white}
-                strokeWidth={connectorWidthPx * 1.4}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeOpacity={0.7}
-                strokeDasharray={strokeDashArray}
-                fill="none"
-              />
-              <polyline
-                id={`${connector.id}`}
-                points={pathString}
-                stroke={getColorVariant(color.value, 'dark', { grade: 1 })}
-                strokeWidth={connectorWidthPx}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeDasharray={strokeDashArray}
-                fill="none"
-                {...animatedProps}
-              />
-            </>
-          );
-        })} */}
 
         {anchorPositions.map((anchor) => {
           return (
