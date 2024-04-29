@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Box } from '@mui/material';
 import { useUiStateStore } from 'src/stores/uiStateStore';
 import { useInteractionManager } from 'src/interaction/useInteractionManager';
@@ -16,6 +16,10 @@ import { useScene } from 'src/hooks/useScene';
 import { RendererProps } from 'src/types/rendererProps';
 
 export const Renderer = ({ showGrid, backgroundColor }: RendererProps) => {
+  const [count, setCount] = useState(0);
+  const eventer = (e: any) => {
+    setCount(e);
+  };
   const containerRef = useRef<HTMLDivElement>();
   const interactionsRef = useRef<HTMLDivElement>();
   const enableDebugTools = useUiStateStore((state) => {
@@ -76,7 +80,7 @@ export const Renderer = ({ showGrid, backgroundColor }: RendererProps) => {
         </SceneLayer>
       )}
       <SceneLayer>
-        <Connectors connectors={connectors} />
+        <Connectors clickEvent={count} connectors={connectors} />
       </SceneLayer>
       <SceneLayer>
         <TextBoxes textBoxes={textBoxes} />
@@ -106,6 +110,21 @@ export const Renderer = ({ showGrid, backgroundColor }: RendererProps) => {
       <SceneLayer>
         <TransformControlsManager />
       </SceneLayer>
+      {/* <Counter title="Churvah" clickEvent={count} /> */}
+      <Box
+        style={{
+          position: 'absolute',
+          width: '100px',
+          height: '100px',
+          zIndex: 9,
+          top: '0',
+          left: '0',
+          backgroundColor: 'red'
+        }}
+        onClick={(e) => {
+          return eventer(e);
+        }}
+      />
     </Box>
   );
 };

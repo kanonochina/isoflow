@@ -16,10 +16,15 @@ import { useColor } from 'src/hooks/useColor';
 interface Props {
   connector: ReturnType<typeof useScene>['connectors'][0];
   isSelected?: boolean;
+  clickEvent: any;
+  // onClick: (event?: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
-export const Connector = ({ connector: _connector, isSelected }: Props) => {
-  const [showSVG, setShowSVG] = useState(false);
+export const Connector = ({
+  connector: _connector,
+  isSelected,
+  clickEvent
+}: Props) => {
   const theme = useTheme();
   const color = useColor(_connector.color);
   const { currentView } = useScene();
@@ -29,56 +34,9 @@ export const Connector = ({ connector: _connector, isSelected }: Props) => {
   });
   const [svgs, setSvgs] = useState<Array<JSX.Element>>([]);
 
-  const sendPing = () => {
-    setSvgs((prevSvgs) => {
-      return [
-        ...prevSvgs,
-        <Svg
-          key={prevSvgs.length}
-          style={{
-            transform: 'scale(-1, 1)',
-            top: -15,
-            right: -15,
-            position: 'absolute'
-          }}
-          viewboxSize={pxSize}
-        >
-          <circle
-            cx="15"
-            cy="15"
-            r="15"
-            stroke="black"
-            strokeWidth="1"
-            fill="red"
-          >
-            <animateMotion
-              path={`${convertPathString(pathString)}`}
-              repeatCount="1"
-              dur="1s"
-            />
-          </circle>
-        </Svg>
-      ];
-    });
-  };
-
-  // useEffect(() => {
-  //   if (svgs.length > 0) {
-  //     const timer = setTimeout(() => {
-  //       setSvgs((prevSvgs) => {
-  //         return prevSvgs.slice(1);
-  //       });
-  //       clearTimeout(timer);
-  //     }, 500);
-
-  //     return () => {
-  //       clearTimeout(timer);
-  //     };
-  //   }
-  // }, [svgs]);
-
   useEffect(() => {
     const timeoutIds = svgs.map((_, index) => {
+      console.log(_, index);
       return setTimeout(() => {
         setSvgs((prevSvgs) => {
           return prevSvgs.filter((_, i) => {
@@ -93,6 +51,12 @@ export const Connector = ({ connector: _connector, isSelected }: Props) => {
       });
     };
   }, [svgs]);
+
+  useEffect(() => {
+    if (clickEvent !== 0) {
+      sendPing();
+    }
+  }, [clickEvent]);
 
   const drawOffset = useMemo(() => {
     return {
@@ -181,10 +145,12 @@ export const Connector = ({ connector: _connector, isSelected }: Props) => {
         }
       : {};
 
-  return (
-    <Box style={css}>
-      {/* {showSVG && (
+  const sendPing = () => {
+    setSvgs((prevSvgs) => {
+      return [
+        ...prevSvgs,
         <Svg
+          key={prevSvgs.length}
           style={{
             transform: 'scale(-1, 1)',
             top: -15,
@@ -203,38 +169,17 @@ export const Connector = ({ connector: _connector, isSelected }: Props) => {
           >
             <animateMotion
               path={`${convertPathString(pathString)}`}
-              repeatCount="indefinite"
+              repeatCount="1"
               dur="1s"
             />
           </circle>
         </Svg>
-      )} */}
-      {svgs}
-      {/* <Svg
-        style={{
-          transform: 'scale(-1, 1)',
-          top: -15,
-          right: -15,
-          position: 'absolute'
-        }}
-        viewboxSize={pxSize}
-      >
-        <circle
-          cx="15"
-          cy="15"
-          r="15"
-          stroke="black"
-          strokeWidth="1"
-          fill="red"
-        >
-          <animateMotion
-            path={`${convertPathString(pathString)}`}
-            repeatCount="indefinite"
-            dur="1s"
-          />
-        </circle>
-      </Svg> */}
+      ];
+    });
+  };
 
+  return (
+    <Box style={css}>
       <Svg
         style={{
           // TODO: The original x coordinates of each tile seems to be calculated wrongly.
@@ -334,6 +279,7 @@ export const Connector = ({ connector: _connector, isSelected }: Props) => {
           </g>
         )}
       </Svg>
+      {svgs}
     </Box>
   );
 };

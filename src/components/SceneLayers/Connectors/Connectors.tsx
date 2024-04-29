@@ -5,9 +5,11 @@ import { Connector } from './Connector';
 
 interface Props {
   connectors: ReturnType<typeof useScene>['connectors'];
+  clickEvent: any;
+  // onClick: (event?: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
-export const Connectors = ({ connectors }: Props) => {
+export const Connectors = ({ connectors, clickEvent }: Props) => {
   const itemControls = useUiStateStore((state) => {
     return state.itemControls;
   });
@@ -32,6 +34,7 @@ export const Connectors = ({ connectors }: Props) => {
       {[...connectors].reverse().map((connector) => {
         return (
           <Connector
+            clickEvent={clickEvent}
             key={connector.id}
             connector={connector}
             isSelected={selectedConnectorId === connector.id}
