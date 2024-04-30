@@ -17,13 +17,15 @@ interface Props {
   connector: ReturnType<typeof useScene>['connectors'][0];
   isSelected?: boolean;
   clickEvent: any;
+  sequence: number;
   // onClick: (event?: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
 export const Connector = ({
   connector: _connector,
   isSelected,
-  clickEvent
+  clickEvent,
+  sequence
 }: Props) => {
   const theme = useTheme();
   const color = useColor(_connector.color);
@@ -34,27 +36,28 @@ export const Connector = ({
   });
   const [svgs, setSvgs] = useState<Array<JSX.Element>>([]);
 
-  useEffect(() => {
-    const timeoutIds = svgs.map((_, index) => {
-      console.log(_, index);
-      return setTimeout(() => {
-        setSvgs((prevSvgs) => {
-          return prevSvgs.filter((_, i) => {
-            return i !== index;
-          });
-        });
-      }, 1000);
-    });
-    return () => {
-      timeoutIds.forEach((timeoutId) => {
-        return clearTimeout(timeoutId);
-      });
-    };
-  }, [svgs]);
+  // useEffect(() => {
+  //   const timeoutIds = svgs.map((_, index) => {
+  //     // console.log(sequence, _, index);
+  //     return setTimeout(() => {
+  //       setSvgs((prevSvgs) => {
+  //         return prevSvgs.filter((_, i) => {
+  //           return i !== index;
+  //         });
+  //       });
+  //     }, 1000);
+  //   });
+  //   return () => {
+  //     timeoutIds.forEach((timeoutId) => {
+  //       return clearTimeout(timeoutId);
+  //     });
+  //   };
+  // }, [svgs]);
 
   useEffect(() => {
-    if (clickEvent !== 0) {
-      sendPing();
+    if (clickEvent !== null) {
+      sendPing(sequence, convertPathString(pathString));
+      console.log(sequence, convertPathString(pathString));
     }
   }, [clickEvent]);
 
@@ -145,12 +148,13 @@ export const Connector = ({
         }
       : {};
 
-  const sendPing = () => {
+  const sendPing = (delay: number, path: any) => {
     setSvgs((prevSvgs) => {
       return [
         ...prevSvgs,
+
         <Svg
-          key={prevSvgs.length}
+          key={`${prevSvgs.length}_${delay}`}
           style={{
             transform: 'scale(-1, 1)',
             top: -15,
@@ -168,9 +172,11 @@ export const Connector = ({
             fill="red"
           >
             <animateMotion
-              path={`${convertPathString(pathString)}`}
+              // key={`${prevSvgs.length}_${delay}`}
+              path={convertPathString(pathString)}
               repeatCount="1"
               dur="1s"
+              begin={`${delay * 1000}ms; pause.end`}
             />
           </circle>
         </Svg>
@@ -264,10 +270,7 @@ export const Connector = ({
         })}
 
         {directionIcon && (
-          <g
-            transform={`translate(${directionIcon.x}, ${directionIcon.y})`}
-            onClick={sendPing}
-          >
+          <g transform={`translate(${directionIcon.x}, ${directionIcon.y})`}>
             <g transform={`rotate(${directionIcon.rotation})`}>
               <polygon
                 fill="black"

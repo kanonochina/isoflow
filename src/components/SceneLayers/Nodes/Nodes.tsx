@@ -4,6 +4,7 @@ import { Node } from './Node/Node';
 
 interface Props {
   nodes: ViewItem[];
+  style: any;
 }
 
 export const Nodes = ({ nodes }: Props) => {

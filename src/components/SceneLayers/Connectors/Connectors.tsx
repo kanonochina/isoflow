@@ -31,10 +31,11 @@ export const Connectors = ({ connectors, clickEvent }: Props) => {
 
   return (
     <>
-      {[...connectors].reverse().map((connector) => {
+      {[...connectors].reverse().map((connector, i) => {
         return (
           <Connector
             clickEvent={clickEvent}
+            sequence={i}
             key={connector.id}
             connector={connector}
             isSelected={selectedConnectorId === connector.id}

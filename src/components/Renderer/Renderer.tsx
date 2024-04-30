@@ -16,9 +16,9 @@ import { useScene } from 'src/hooks/useScene';
 import { RendererProps } from 'src/types/rendererProps';
 
 export const Renderer = ({ showGrid, backgroundColor }: RendererProps) => {
-  const [count, setCount] = useState(0);
+  const [events, setEvent] = useState(null);
   const eventer = (e: any) => {
-    setCount(e);
+    setEvent(e);
   };
   const containerRef = useRef<HTMLDivElement>();
   const interactionsRef = useRef<HTMLDivElement>();
@@ -80,7 +80,7 @@ export const Renderer = ({ showGrid, backgroundColor }: RendererProps) => {
         </SceneLayer>
       )}
       <SceneLayer>
-        <Connectors clickEvent={count} connectors={connectors} />
+        <Connectors clickEvent={events} connectors={connectors} />
       </SceneLayer>
       <SceneLayer>
         <TextBoxes textBoxes={textBoxes} />
@@ -105,7 +105,7 @@ export const Renderer = ({ showGrid, backgroundColor }: RendererProps) => {
         }}
       />
       <SceneLayer>
-        <Nodes nodes={items} />
+        <Nodes nodes={items} style={{ backgroundColor: 'red' }} />
       </SceneLayer>
       <SceneLayer>
         <TransformControlsManager />
