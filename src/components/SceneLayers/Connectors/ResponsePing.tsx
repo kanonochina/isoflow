@@ -12,10 +12,11 @@ interface Props {
   clickEvent: any;
   sequence: number;
   connectors: ReturnType<typeof useScene>['connectors'];
+  color: string;
   // onClick: (event?: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
-export const PingLines = ({ connector: _connector, clickEvent, sequence, connectors }: Props) => {
+export const ResponsePing = ({ connector: _connector, clickEvent, sequence, connectors, color }: Props) => {
   const connector = useConnector(_connector.id);
   const { css, pxSize } = useIsoProjection({
     ...connector.path.rectangle
@@ -25,7 +26,7 @@ export const PingLines = ({ connector: _connector, clickEvent, sequence, connect
   useEffect(() => {
     if (clickEvent !== 0) {
       sendPing(sequence, convertPathString(pathString));
-      console.log(sequence * 1000 + (distdelay * 100) / 1000);
+      console.log(connectors);
       // console.log(10 - getSVGPathLength(pathString));
     }
   }, [clickEvent]);
@@ -66,20 +67,6 @@ export const PingLines = ({ connector: _connector, clickEvent, sequence, connect
     return (UNPROJECTED_TILE_SIZE / 100) * connector.width;
   }, [connector.width]);
 
-  const strokeDashArray = useMemo(() => {
-    switch (connector.style) {
-      case 'DASHED':
-        return `${connectorWidthPx * 2}, ${connectorWidthPx * 2}`;
-      case 'DOTTED':
-        return `0, ${connectorWidthPx * 1.8}`;
-      case 'ANIMATED':
-        return `${connectorWidthPx * 2.4}, ${connectorWidthPx * 2.4}`;
-      case 'SOLID':
-      default:
-        return 'none';
-    }
-  }, [connector.style, connectorWidthPx]);
-
   const sendPing = (delay: number, path: any) => {
     setSvgs((prevSvgs) => {
       const newSvg = (
@@ -96,19 +83,21 @@ export const PingLines = ({ connector: _connector, clickEvent, sequence, connect
           }}
           viewboxSize={pxSize}
         >
-          <circle cx="15" cy="15" r="15" stroke="black" strokeWidth="1" fill="yellow">
+          <circle cx="15" cy="15" r="15" stroke="black" strokeWidth="1" fill={color}>
             <animateMotion
               // key={`${prevSvgs.length}_${delay}`}
               path={convertPathString(pathString)}
               repeatCount="1"
               dur="1s"
-              begin={`${delay * 950}ms`}
+              begin={`${(connectors.length + delay) * 950}ms`}
+              keyPoints="1;0"
+              keyTimes="0;1"
             />
           </circle>
-          <script>{`console.log("${connector.id}-${clickEvent}-${delay}", ${distdelay}); 
+          <script>{`console.log("${connectors.length} ${delay}-${delay}", ${distdelay}); 
           setTimeout(() => { document.getElementById("${
             connector.id
-          }-${clickEvent}-${delay}").style.display="none" }, ${delay === 0 ? 950 : (delay + 1) * 950})`}</script>
+          }-${clickEvent}-${delay}").style.display="none" }, ${(connectors.length + delay + 1) * 950})`}</script>
         </Svg>
       );
 
