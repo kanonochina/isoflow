@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import type { useScene } from 'src/hooks/useScene';
 import { useUiStateStore } from 'src/stores/uiStateStore';
 import { Connector } from './Connector';
+import { PingLines } from './PingLines';
 
 interface Props {
   connectors: ReturnType<typeof useScene>['connectors'];
@@ -40,6 +41,18 @@ export const Connectors = ({ connectors, clickEvent }: Props) => {
             connector={connector}
             connectors={...connectors}
             isSelected={selectedConnectorId === connector.id}
+          />
+        );
+      })}
+      {[...connectors].reverse().map((connector, i) => {
+        return (
+          <PingLines
+            clickEvent={clickEvent}
+            sequence={i}
+            key={connector.id}
+            connector={connector}
+            connectors={...connectors}
+            // isSelected={selectedConnectorId === connector.id}
           />
         );
       })}

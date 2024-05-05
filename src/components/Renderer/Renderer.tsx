@@ -16,9 +16,9 @@ import { useScene } from 'src/hooks/useScene';
 import { RendererProps } from 'src/types/rendererProps';
 
 export const Renderer = ({ showGrid, backgroundColor }: RendererProps) => {
-  const [events, setEvent] = useState(null);
-  const eventer = (e: any) => {
-    setEvent(e);
+  const [events, setEvent] = useState(0);
+  const eventer = () => {
+    setEvent(events + 1);
   };
   const containerRef = useRef<HTMLDivElement>();
   const interactionsRef = useRef<HTMLDivElement>();
@@ -121,9 +121,9 @@ export const Renderer = ({ showGrid, backgroundColor }: RendererProps) => {
           left: '0',
           backgroundColor: 'red'
         }}
-        onClick={(e) => {
-          console.log(items);
-          return eventer(e);
+        onClick={() => {
+          console.log(events);
+          return eventer();
         }}
       />
     </Box>

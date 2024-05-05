@@ -27,51 +27,6 @@ export const Connector = ({ connector: _connector, isSelected, clickEvent, seque
   const { css, pxSize } = useIsoProjection({
     ...connector.path.rectangle
   });
-  const [svgs, setSvgs] = useState<Array<JSX.Element>>([]);
-
-  //  useEffect(() => {
-  //       const timeoutIds = svgs.map((_, index) => {
-  //            console.log(sequence, _, index);
-  //            return setTimeout(() => {
-  //                 setSvgs((prevSvgs) => {
-  //                      console.log(prevSvgs);
-  //                      return prevSvgs.filter((_, i) => {
-  //                           return i !== index;
-  //                      });
-  //                 });
-  //            }, 1000);
-  //       });
-  //       return () => {
-  //            timeoutIds.forEach((timeoutId) => {
-  //                 return clearTimeout(timeoutId);
-  //            });
-  //       };
-  //  }, [svgs]);
-  //  useEffect(() => {
-  //       const interval = setInterval(() => {
-  //            setSvgs((prevSvgs) => {
-  //                 if (prevSvgs.length > 0) {
-  //                      return prevSvgs.slice(1);
-  //                 }
-  //                 return prevSvgs;
-  //            });
-  //       }, 1000);
-
-  //       // Clear interval on component unmount
-  //       return () => {
-  //            return clearInterval(interval);
-  //       };
-  //  }, [clickEvent]);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-use-before-define
-
-  useEffect(() => {
-    if (clickEvent !== null) {
-      sendPing(sequence, convertPathString(pathString));
-      console.log(svgs, 'gggg');
-      console.log(connectors);
-      // console.log(10 - getSVGPathLength(pathString));
-    }
-  }, [clickEvent]);
 
   const drawOffset = useMemo(() => {
     return {
@@ -85,24 +40,6 @@ export const Connector = ({ connector: _connector, isSelected, clickEvent, seque
       return `${acc} ${tile.x * UNPROJECTED_TILE_SIZE + drawOffset.x},${tile.y * UNPROJECTED_TILE_SIZE + drawOffset.y}`;
     }, '');
   }, [connector.path.tiles, drawOffset]);
-
-  const convertPathString = (pth: string) => {
-    const path = pth.split(' ');
-    let newPath = '';
-    for (let i = 0; i < path.length; i++) {
-      if (i % 50 === 0) {
-        newPath += `M${path[i]} `;
-      } else {
-        newPath += `${path[i]} `;
-      }
-    }
-    return newPath.trim();
-  };
-  const getSVGPathLength = (svgPath: any) => {
-    // Remove spaces and split the path string by commands
-    const commaCount = svgPath.split(',').length - 1;
-    return commaCount;
-  };
 
   const anchorPositions = useMemo(() => {
     if (!isSelected) return [];
@@ -152,51 +89,6 @@ export const Connector = ({ connector: _connector, isSelected, clickEvent, seque
         }
       : {};
 
-  const generateID = () => {
-    return Math.random().toString(36).substr(2, 6);
-  };
-
-  const sendPing = (delay: number, path: any) => {
-    const theID = generateID();
-
-    setSvgs((prevSvgs) => {
-      const newSvg = (
-        <Svg
-          key={`${theID}-${delay}`}
-          style={{
-            transform: 'scale(-1, 1)',
-            top: -15,
-            right: -15,
-            position: 'absolute'
-          }}
-          viewboxSize={pxSize}
-        >
-          <script>{`var parentElement = document.getElementById("${connector.id + delay}").parentElement`}</script>
-          {/* <script>var x = document.getElementById("{`a${prevSvgs.length}_${delay}`}");</script> */}
-          {/* <script>{`setTimeout(() => { parentElement.remove() }, ${delay * 1000 + (distdelay * 100) / 1000})`}</script> */}
-
-          <div id={connector.id + delay} />
-          <circle cx="15" cy="15" r="15" stroke="black" strokeWidth="1" fill="red">
-            <animateMotion
-              // key={`${prevSvgs.length}_${delay}`}
-              path={convertPathString(pathString)}
-              repeatCount="1"
-              // dur={`${distdelay}ms`}
-              // begin={`${delay * 1000 + (distdelay * 100) / 1000}ms`}
-              dur="1000ms"
-              begin={`${delay * 1000 + (distdelay * 100) / 1000}ms`}
-              // keyPoints="1;0"
-              // keyTimes="0;1"
-            />
-          </circle>
-        </Svg>
-      );
-      return [newSvg, ...prevSvgs];
-    });
-  };
-
-  const distdelay = (getSVGPathLength(pathString) * 1000) / 2.64;
-  console.log(svgs);
   return (
     <Box style={css}>
       <Svg
@@ -229,34 +121,6 @@ export const Connector = ({ connector: _connector, isSelected, clickEvent, seque
           fill="none"
           {...animatedProps}
         />
-        {/* {anchorPositions.map(() => {
-          return (
-            <>
-              <polyline
-                points={pathString}
-                // stroke={theme.palette.common.white}
-                stroke={theme.palette.common.white}
-                strokeWidth={connectorWidthPx * 1.4}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeOpacity={0.7}
-                strokeDasharray={strokeDashArray}
-                fill="none"
-              />
-              <polyline
-                id={`${connector.id}`}
-                points={pathString}
-                stroke={getColorVariant(color.value, 'dark', { grade: 1 })}
-                strokeWidth={connectorWidthPx}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeDasharray={strokeDashArray}
-                fill="none"
-                {...animatedProps}
-              />
-            </>
-          );
-        })} */}
 
         {anchorPositions.map((anchor) => {
           return (
@@ -286,7 +150,6 @@ export const Connector = ({ connector: _connector, isSelected, clickEvent, seque
           </g>
         )}
       </Svg>
-      {svgs}
     </Box>
   );
 };
