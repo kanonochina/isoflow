@@ -122,6 +122,7 @@ export const Renderer = ({ showGrid, backgroundColor }: RendererProps) => {
           backgroundColor: 'red'
         }}
         onClick={(e) => {
+          console.log(items);
           return eventer(e);
         }}
       />

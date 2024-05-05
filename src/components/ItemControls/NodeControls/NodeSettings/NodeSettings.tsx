@@ -4,6 +4,7 @@ import { ModelItem, ViewItem } from 'src/types';
 import { MarkdownEditor } from 'src/components/MarkdownEditor/MarkdownEditor';
 import { useModelItem } from 'src/hooks/useModelItem';
 import { DeleteButton } from '../../components/DeleteButton';
+import { SendPing } from '../../components/SendPing';
 import { Section } from '../../components/Section';
 
 export type NodeUpdates = {
@@ -16,13 +17,15 @@ interface Props {
   onModelItemUpdated: (updates: Partial<ModelItem>) => void;
   onViewItemUpdated: (updates: Partial<ViewItem>) => void;
   onDeleted: () => void;
+  onPing: () => void;
 }
 
 export const NodeSettings = ({
   node,
   onModelItemUpdated,
   onViewItemUpdated,
-  onDeleted
+  onDeleted,
+  onPing
 }: Props) => {
   const modelItem = useModelItem(node.id);
 
@@ -63,6 +66,7 @@ export const NodeSettings = ({
       )}
       <Section>
         <Box>
+          <SendPing onClick={onPing} />
           <DeleteButton onClick={onDeleted} />
         </Box>
       </Section>

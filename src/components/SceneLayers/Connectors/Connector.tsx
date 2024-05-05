@@ -1,11 +1,8 @@
+/* eslint-disable no-console */
 import React, { useMemo, useState, useEffect } from 'react';
 import { useTheme, Box } from '@mui/material';
 import { UNPROJECTED_TILE_SIZE } from 'src/config';
-import {
-  getAnchorTile,
-  getColorVariant,
-  getConnectorDirectionIcon
-} from 'src/utils';
+import { getAnchorTile, getColorVariant, getConnectorDirectionIcon } from 'src/utils';
 import { Circle } from 'src/components/Circle/Circle';
 import { Svg } from 'src/components/Svg/Svg';
 import { useIsoProjection } from 'src/hooks/useIsoProjection';
@@ -18,15 +15,11 @@ interface Props {
   isSelected?: boolean;
   clickEvent: any;
   sequence: number;
+  connectors: ReturnType<typeof useScene>['connectors'];
   // onClick: (event?: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
-export const Connector = ({
-  connector: _connector,
-  isSelected,
-  clickEvent,
-  sequence
-}: Props) => {
+export const Connector = ({ connector: _connector, isSelected, clickEvent, sequence, connectors }: Props) => {
   const theme = useTheme();
   const color = useColor(_connector.color);
   const { currentView } = useScene();
@@ -36,28 +29,47 @@ export const Connector = ({
   });
   const [svgs, setSvgs] = useState<Array<JSX.Element>>([]);
 
-  // useEffect(() => {
-  //   const timeoutIds = svgs.map((_, index) => {
-  //     // console.log(sequence, _, index);
-  //     return setTimeout(() => {
-  //       setSvgs((prevSvgs) => {
-  //         return prevSvgs.filter((_, i) => {
-  //           return i !== index;
-  //         });
+  //  useEffect(() => {
+  //       const timeoutIds = svgs.map((_, index) => {
+  //            console.log(sequence, _, index);
+  //            return setTimeout(() => {
+  //                 setSvgs((prevSvgs) => {
+  //                      console.log(prevSvgs);
+  //                      return prevSvgs.filter((_, i) => {
+  //                           return i !== index;
+  //                      });
+  //                 });
+  //            }, 1000);
   //       });
-  //     }, 1000);
-  //   });
-  //   return () => {
-  //     timeoutIds.forEach((timeoutId) => {
-  //       return clearTimeout(timeoutId);
-  //     });
-  //   };
-  // }, [svgs]);
+  //       return () => {
+  //            timeoutIds.forEach((timeoutId) => {
+  //                 return clearTimeout(timeoutId);
+  //            });
+  //       };
+  //  }, [svgs]);
+  //  useEffect(() => {
+  //       const interval = setInterval(() => {
+  //            setSvgs((prevSvgs) => {
+  //                 if (prevSvgs.length > 0) {
+  //                      return prevSvgs.slice(1);
+  //                 }
+  //                 return prevSvgs;
+  //            });
+  //       }, 1000);
+
+  //       // Clear interval on component unmount
+  //       return () => {
+  //            return clearInterval(interval);
+  //       };
+  //  }, [clickEvent]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-use-before-define
 
   useEffect(() => {
     if (clickEvent !== null) {
       sendPing(sequence, convertPathString(pathString));
-      console.log(sequence, convertPathString(pathString));
+      console.log(svgs, 'gggg');
+      console.log(connectors);
+      // console.log(10 - getSVGPathLength(pathString));
     }
   }, [clickEvent]);
 
@@ -70,9 +82,7 @@ export const Connector = ({
 
   const pathString = useMemo(() => {
     return connector.path.tiles.reduce((acc, tile) => {
-      return `${acc} ${tile.x * UNPROJECTED_TILE_SIZE + drawOffset.x},${
-        tile.y * UNPROJECTED_TILE_SIZE + drawOffset.y
-      }`;
+      return `${acc} ${tile.x * UNPROJECTED_TILE_SIZE + drawOffset.x},${tile.y * UNPROJECTED_TILE_SIZE + drawOffset.y}`;
     }, '');
   }, [connector.path.tiles, drawOffset]);
 
@@ -88,6 +98,12 @@ export const Connector = ({
     }
     return newPath.trim();
   };
+  const getSVGPathLength = (svgPath: any) => {
+    // Remove spaces and split the path string by commands
+    const commaCount = svgPath.split(',').length - 1;
+    return commaCount;
+  };
+
   const anchorPositions = useMemo(() => {
     if (!isSelected) return [];
 
@@ -96,23 +112,11 @@ export const Connector = ({
 
       return {
         id: anchor.id,
-        x:
-          (connector.path.rectangle.from.x - position.x) *
-            UNPROJECTED_TILE_SIZE +
-          drawOffset.x,
-        y:
-          (connector.path.rectangle.from.y - position.y) *
-            UNPROJECTED_TILE_SIZE +
-          drawOffset.y
+        x: (connector.path.rectangle.from.x - position.x) * UNPROJECTED_TILE_SIZE + drawOffset.x,
+        y: (connector.path.rectangle.from.y - position.y) * UNPROJECTED_TILE_SIZE + drawOffset.y
       };
     });
-  }, [
-    currentView,
-    connector.path.rectangle,
-    connector.anchors,
-    drawOffset,
-    isSelected
-  ]);
+  }, [currentView, connector.path.rectangle, connector.anchors, drawOffset, isSelected]);
 
   const directionIcon = useMemo(() => {
     return getConnectorDirectionIcon(connector.path.tiles);
@@ -148,13 +152,17 @@ export const Connector = ({
         }
       : {};
 
-  const sendPing = (delay: number, path: any) => {
-    setSvgs((prevSvgs) => {
-      return [
-        ...prevSvgs,
+  const generateID = () => {
+    return Math.random().toString(36).substr(2, 6);
+  };
 
+  const sendPing = (delay: number, path: any) => {
+    const theID = generateID();
+
+    setSvgs((prevSvgs) => {
+      const newSvg = (
         <Svg
-          key={`${prevSvgs.length}_${delay}`}
+          key={`${theID}-${delay}`}
           style={{
             transform: 'scale(-1, 1)',
             top: -15,
@@ -163,27 +171,32 @@ export const Connector = ({
           }}
           viewboxSize={pxSize}
         >
-          <circle
-            cx="15"
-            cy="15"
-            r="15"
-            stroke="black"
-            strokeWidth="1"
-            fill="red"
-          >
+          <script>{`var parentElement = document.getElementById("${connector.id + delay}").parentElement`}</script>
+          {/* <script>var x = document.getElementById("{`a${prevSvgs.length}_${delay}`}");</script> */}
+          {/* <script>{`setTimeout(() => { parentElement.remove() }, ${delay * 1000 + (distdelay * 100) / 1000})`}</script> */}
+
+          <div id={connector.id + delay} />
+          <circle cx="15" cy="15" r="15" stroke="black" strokeWidth="1" fill="red">
             <animateMotion
               // key={`${prevSvgs.length}_${delay}`}
               path={convertPathString(pathString)}
               repeatCount="1"
-              dur="1s"
-              begin={`${delay * 1000}ms; pause.end`}
+              // dur={`${distdelay}ms`}
+              // begin={`${delay * 1000 + (distdelay * 100) / 1000}ms`}
+              dur="1000ms"
+              begin={`${delay * 1000 + (distdelay * 100) / 1000}ms`}
+              // keyPoints="1;0"
+              // keyTimes="0;1"
             />
           </circle>
         </Svg>
-      ];
+      );
+      return [newSvg, ...prevSvgs];
     });
   };
 
+  const distdelay = (getSVGPathLength(pathString) * 1000) / 2.64;
+  console.log(svgs);
   return (
     <Box style={css}>
       <Svg
@@ -197,11 +210,7 @@ export const Connector = ({
       >
         <polyline
           points={pathString}
-          stroke={
-            connector.style === 'ANIMATED'
-              ? 'transparent'
-              : theme.palette.common.white
-          }
+          stroke={connector.style === 'ANIMATED' ? 'transparent' : theme.palette.common.white}
           strokeWidth={connectorWidthPx * 1.4}
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -252,12 +261,7 @@ export const Connector = ({
         {anchorPositions.map((anchor) => {
           return (
             <g key={anchor.id}>
-              <Circle
-                tile={anchor}
-                radius={18}
-                fill={theme.palette.common.white}
-                fillOpacity={0.7}
-              />
+              <Circle tile={anchor} radius={18} fill={theme.palette.common.white} fillOpacity={0.7} />
               <Circle
                 tile={anchor}
                 radius={12}
@@ -269,7 +273,7 @@ export const Connector = ({
           );
         })}
 
-        {directionIcon && (
+        {directionIcon && connector.style !== 'ANIMATED' && (
           <g transform={`translate(${directionIcon.x}, ${directionIcon.y})`}>
             <g transform={`rotate(${directionIcon.rotation})`}>
               <polygon

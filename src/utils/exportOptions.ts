@@ -36,13 +36,24 @@ export const downloadFile = (data: Blob, filename: string) => {
   FileSaver.saveAs(data, filename);
 };
 
-export const exportAsJSON = (model: Model) => {
-  const data = new Blob([JSON.stringify(model)], {
-    type: 'application/json;charset=utf-8'
-  });
+export async function exportAsJSON(data: any) {
+  delete data.version;
+  const json = JSON.stringify(data, null, 2);
+  try {
+    await navigator.clipboard.writeText(json);
+    console.log('JSON data copied to clipboard');
+  } catch (err) {
+    console.error('Failed to copy text: ', err);
+  }
+}
 
-  downloadFile(data, generateGenericFilename('json'));
-};
+// export const exportAsJSON = (model: Model) => {
+//   const data = new Blob([JSON.stringify(model)], {
+//     type: 'application/json;charset=utf-8'
+//   });
+
+//   downloadFile(data, generateGenericFilename('json'));
+// };
 
 export const exportAsImage = async (el: HTMLDivElement, size?: Size) => {
   const imageData = await domtoimage.toPng(el, {

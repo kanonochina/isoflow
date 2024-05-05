@@ -101,6 +101,11 @@ export const NodeControls = ({ id }: Props) => {
             uiStateActions.setItemControls(null);
             deleteViewItem(viewItem.id);
           }}
+          onPing={() => {
+            console.log('onPing');
+            uiStateActions.setItemControls(null);
+            deleteViewItem(viewItem.id);
+          }}
         />
       )}
       {mode === 'CHANGE_ICON' && (

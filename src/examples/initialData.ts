@@ -51,13 +51,34 @@ export const icons: Icons = isopacks;
 export const initialData: InitialData = {
   title: 'Untitled',
   colors: [
-    { id: 'color1', value: '#a5b8f3' },
-    { id: 'color2', value: '#bbadfb' },
-    { id: 'color3', value: '#f4eb8e' },
-    { id: 'color4', value: '#f0aca9' },
-    { id: 'color5', value: '#fad6ac' },
-    { id: 'color6', value: '#a8dc9d' },
-    { id: 'color7', value: '#b3e5e3' }
+    {
+      id: 'color1',
+      value: '#a5b8f3'
+    },
+    {
+      id: 'color2',
+      value: '#bbadfb'
+    },
+    {
+      id: 'color3',
+      value: '#f4eb8e'
+    },
+    {
+      id: 'color4',
+      value: '#f0aca9'
+    },
+    {
+      id: 'color5',
+      value: '#fad6ac'
+    },
+    {
+      id: 'color6',
+      value: '#a8dc9d'
+    },
+    {
+      id: 'color7',
+      value: '#b3e5e3'
+    }
   ],
   icons: [
     {
@@ -69,13 +90,41 @@ export const initialData: InitialData = {
     }
   ],
   items: [
-    { id: '7f8f4d35-b3b7-4b96-8e38-067ab49a864a', name: '', icon: 'block' },
-    { id: '430edac5-6d68-4e11-a8f1-8845d0fe4410', name: '', icon: 'block' },
-    { id: '75416651-9326-4ef3-b8e8-20c8b42c5d6d', name: '', icon: 'block' },
-    { id: '6958e3c4-0dea-4d81-8d83-5f03f8f9dd37', name: '', icon: 'block' },
-    { id: '332cf7db-6a30-4b5e-a2d4-7a17a494d48d', name: '', icon: 'block' },
-    { id: '8d975bd4-cd98-4b33-993b-8d933628e7a0', name: '', icon: 'block' },
-    { id: '0203d8fb-41cf-4775-89cf-686b33a441bc', name: '', icon: 'block' }
+    {
+      id: '7f8f4d35-b3b7-4b96-8e38-067ab49a864a',
+      name: '',
+      icon: 'block'
+    },
+    {
+      id: '430edac5-6d68-4e11-a8f1-8845d0fe4410',
+      name: '',
+      icon: 'block'
+    },
+    {
+      id: '75416651-9326-4ef3-b8e8-20c8b42c5d6d',
+      name: '',
+      icon: 'block'
+    },
+    {
+      id: '6958e3c4-0dea-4d81-8d83-5f03f8f9dd37',
+      name: '',
+      icon: 'block'
+    },
+    {
+      id: '332cf7db-6a30-4b5e-a2d4-7a17a494d48d',
+      name: '',
+      icon: 'block'
+    },
+    {
+      id: '8d975bd4-cd98-4b33-993b-8d933628e7a0',
+      name: '',
+      icon: 'block'
+    },
+    {
+      id: '0203d8fb-41cf-4775-89cf-686b33a441bc',
+      name: '',
+      icon: 'block'
+    }
   ],
   views: [
     {
@@ -84,50 +133,70 @@ export const initialData: InitialData = {
         {
           labelHeight: 80,
           id: '0203d8fb-41cf-4775-89cf-686b33a441bc',
-          tile: { x: 2, y: -4 }
+          tile: {
+            x: -1,
+            y: -1
+          }
         },
         {
           labelHeight: 80,
           id: '8d975bd4-cd98-4b33-993b-8d933628e7a0',
-          tile: { x: 2, y: 2 }
+          tile: {
+            x: 2,
+            y: -4
+          }
         },
         {
           labelHeight: 80,
           id: '75416651-9326-4ef3-b8e8-20c8b42c5d6d',
-          tile: { x: -1, y: -1 }
+          tile: {
+            x: -3,
+            y: 1
+          }
         },
         {
           labelHeight: 80,
           id: '7f8f4d35-b3b7-4b96-8e38-067ab49a864a',
-          tile: { x: -3, y: 1 }
+          tile: {
+            x: -5,
+            y: 3
+          }
         }
       ],
       connectors: [
         {
-          id: '716cf639-2e4f-4746-addc-4fc30ef8debf',
+          id: '21e31e2e-ae74-4fbc-8931-6783e6d8ebd9',
           color: 'color1',
           anchors: [
             {
-              id: '52cf06bb-7a72-48ec-9932-8b59b455fa25',
-              ref: { item: '75416651-9326-4ef3-b8e8-20c8b42c5d6d' }
+              id: '542696d1-1a8f-4f08-8049-baa70b1b62f9',
+              ref: {
+                item: '0203d8fb-41cf-4775-89cf-686b33a441bc'
+              }
             },
             {
-              id: '1597df68-0f4d-43ff-a676-586d00d2fcf5',
-              ref: { item: '0203d8fb-41cf-4775-89cf-686b33a441bc' }
+              id: 'ec13c5d9-391a-4680-a5e3-a4881579f334',
+              ref: {
+                item: '8d975bd4-cd98-4b33-993b-8d933628e7a0'
+              }
             }
           ]
         },
         {
-          id: '4b7d640a-d3c7-41b2-b2d0-8b39027c1629',
+          id: 'c473562e-fa59-4b36-ae00-43765edbcf2a',
           color: 'color1',
           anchors: [
             {
-              id: '27b5e425-b718-4d49-877f-c6904c12cd03',
-              ref: { item: '75416651-9326-4ef3-b8e8-20c8b42c5d6d' }
+              id: 'b2db478f-4748-4e7e-aa4d-7f774ae6504a',
+              ref: {
+                item: '75416651-9326-4ef3-b8e8-20c8b42c5d6d'
+              }
             },
             {
-              id: '22589270-5f65-4152-b988-e57b93a3567e',
-              ref: { item: '8d975bd4-cd98-4b33-993b-8d933628e7a0' }
+              id: '0eaf75ac-96bc-4f4b-85c5-255d8e5820c8',
+              ref: {
+                item: '0203d8fb-41cf-4775-89cf-686b33a441bc'
+              }
             }
           ]
         },
@@ -137,11 +206,15 @@ export const initialData: InitialData = {
           anchors: [
             {
               id: 'c5a7a71d-d977-4d98-83d1-3db4efbdd6af',
-              ref: { item: '7f8f4d35-b3b7-4b96-8e38-067ab49a864a' }
+              ref: {
+                item: '7f8f4d35-b3b7-4b96-8e38-067ab49a864a'
+              }
             },
             {
               id: '809854bb-17e8-48f0-b525-8eafe2cd427b',
-              ref: { item: '75416651-9326-4ef3-b8e8-20c8b42c5d6d' }
+              ref: {
+                item: '75416651-9326-4ef3-b8e8-20c8b42c5d6d'
+              }
             }
           ]
         }
@@ -149,7 +222,7 @@ export const initialData: InitialData = {
       rectangles: [],
       textBoxes: [],
       id: '376ea58d-e033-4750-93e4-76788aaf62d8',
-      lastUpdated: '2024-04-29T16:38:01.527Z'
+      lastUpdated: '2024-05-01T21:34:34.969Z'
     }
   ]
 };

@@ -38,6 +38,7 @@ export const Connectors = ({ connectors, clickEvent }: Props) => {
             sequence={i}
             key={connector.id}
             connector={connector}
+            connectors={...connectors}
             isSelected={selectedConnectorId === connector.id}
           />
         );
