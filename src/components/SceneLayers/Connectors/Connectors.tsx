@@ -52,7 +52,6 @@ export const Connectors = ({ connectors, clickEvent }: Props) => {
             key={connector.id}
             connector={connector}
             connectors={...connectors}
-            // isSelected={selectedConnectorId === connector.id}
           />
         );
       })}
