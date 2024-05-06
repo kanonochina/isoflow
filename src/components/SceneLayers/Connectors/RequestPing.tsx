@@ -71,7 +71,7 @@ export const RequestPing = ({ connector: _connector, clickEvent, sequence, conne
     setSvgs((prevSvgs) => {
       const newSvg = (
         <Svg
-          id={`${connector.id}-${clickEvent}-${delay}`}
+          id={`${connector.id}-${clickEvent}-${delay}-request`}
           key={`${connector.id}-${clickEvent}-${delay}`}
           style={{
             transform: 'scale(-1, 1)',
@@ -92,10 +92,10 @@ export const RequestPing = ({ connector: _connector, clickEvent, sequence, conne
               begin={`${delay * 950}ms`}
             />
           </circle>
-          <script>{`console.log("${connector.id}-${clickEvent}-${delay}", ${distdelay}); 
+          <script>{`console.log("${connector.id}-${clickEvent}-${delay}-request", ${distdelay}); 
           setTimeout(() => { document.getElementById("${
             connector.id
-          }-${clickEvent}-${delay}").style.display="none" }, ${delay === 0 ? 950 : (delay + 1) * 950})`}</script>
+          }-${clickEvent}-${delay}-request").style.display="none" }, ${delay === 0 ? 950 : (delay + 1) * 950})`}</script>
         </Svg>
       );
 

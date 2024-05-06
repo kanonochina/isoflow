@@ -45,6 +45,17 @@ export const Renderer = ({ showGrid, backgroundColor }: RendererProps) => {
     return showGrid === undefined || showGrid;
   }, [showGrid]);
 
+  // useEffect(() => {
+  //   return () => {
+  //     eventer();
+  //   };
+  // }, []);
+
+  // setTimeout(() => {
+  //   eventer();
+  // }, 1000);
+  // eventer();
+
   return (
     <Box
       ref={containerRef}

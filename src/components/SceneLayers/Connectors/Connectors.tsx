@@ -53,7 +53,7 @@ export const Connectors = ({ connectors, clickEvent }: Props) => {
             key={connector.id}
             connector={connector}
             connectors={...connectors}
-            color="red"
+            color="#cfe8d5"
           />
         );
       })}
@@ -65,7 +65,7 @@ export const Connectors = ({ connectors, clickEvent }: Props) => {
             key={connector.id}
             connector={connector}
             connectors={...connectors}
-            color="green"
+            color="#ea907a"
           />
         );
       })}

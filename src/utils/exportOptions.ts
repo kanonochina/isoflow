@@ -6,11 +6,7 @@ export const generateGenericFilename = (extension: string) => {
   return `isoflow-export-${new Date().toISOString()}.${extension}`;
 };
 
-export const base64ToBlob = (
-  base64: string,
-  contentType: string,
-  sliceSize = 512
-) => {
+export const base64ToBlob = (base64: string, contentType: string, sliceSize = 512) => {
   const byteCharacters = atob(base64);
   const byteArrays = [];
 
@@ -36,24 +32,24 @@ export const downloadFile = (data: Blob, filename: string) => {
   FileSaver.saveAs(data, filename);
 };
 
-export async function exportAsJSON(data: any) {
-  delete data.version;
-  const json = JSON.stringify(data, null, 2);
-  try {
-    await navigator.clipboard.writeText(json);
-    console.log('JSON data copied to clipboard');
-  } catch (err) {
-    console.error('Failed to copy text: ', err);
-  }
-}
+// export async function exportAsJSON(data: any) {
+//   delete data.version;
+//   const json = JSON.stringify(data, null, 2);
+//   try {
+//     await navigator.clipboard.writeText(json);
+//     console.log('JSON data copied to clipboard');
+//   } catch (err) {
+//     console.error('Failed to copy text: ', err);
+//   }
+// }
 
-// export const exportAsJSON = (model: Model) => {
-//   const data = new Blob([JSON.stringify(model)], {
-//     type: 'application/json;charset=utf-8'
-//   });
+export const exportAsJSON = (model: Model) => {
+  const data = new Blob([JSON.stringify(model)], {
+    type: 'application/json;charset=utf-8'
+  });
 
-//   downloadFile(data, generateGenericFilename('json'));
-// };
+  downloadFile(data, generateGenericFilename('json'));
+};
 
 export const exportAsImage = async (el: HTMLDivElement, size?: Size) => {
   const imageData = await domtoimage.toPng(el, {

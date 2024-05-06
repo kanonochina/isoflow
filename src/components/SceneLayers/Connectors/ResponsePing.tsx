@@ -71,7 +71,7 @@ export const ResponsePing = ({ connector: _connector, clickEvent, sequence, conn
     setSvgs((prevSvgs) => {
       const newSvg = (
         <Svg
-          id={`${connector.id}-${clickEvent}-${delay}`}
+          id={`${connector.id}-${clickEvent}-${delay}-response`}
           key={`${connector.id}-${clickEvent}-${delay}`}
           style={{
             transform: 'scale(-1, 1)',
@@ -94,10 +94,10 @@ export const ResponsePing = ({ connector: _connector, clickEvent, sequence, conn
               keyTimes="0;1"
             />
           </circle>
-          <script>{`console.log("${connectors.length} ${delay}-${delay}", ${distdelay}); 
+          <script>{`console.log("${connectors.length} ${delay}-${delay}-response", ${distdelay}); 
           setTimeout(() => { document.getElementById("${
             connector.id
-          }-${clickEvent}-${delay}").style.display="none" }, ${(connectors.length + delay + 1) * 950})`}</script>
+          }-${clickEvent}-${delay}-response").style.display="none" }, ${(connectors.length + delay + 1) * 950})`}</script>
         </Svg>
       );
 
